@@ -8,13 +8,13 @@
 
 #import "QuartzCore/CAMetalLayer.h"
 #import "Metal/MTLDevice.h"
+#import "MetalKit/MTKView.h"
 #import "Renderer.hpp"
 
-@interface RendererAdapter : NSObject
+@interface RendererAdapter : NSObject<MTKViewDelegate>
 {
     Renderer * _pRenderer;
 }
 
--(void)draw:(id <CAMetalDrawable>) drawable device: (id <MTLDevice>) device;
-
+-(nonnull instancetype) initWithMTKView: (MTKView *) pView;
 @end
