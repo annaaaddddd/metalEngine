@@ -36,4 +36,4 @@ In this milestone,  I expanded last milestone with depth testing in 3D.
 - 2D → 3D geometry with proper depth testing
 - Matrix transformations for real-time rotation
 
-![demo](Assets/rotating-cube-gif.gif])
+![demo](Assets/rotating-cube-gif.gif)
