@@ -20,6 +20,12 @@ This is my first experience with Metal:3
 - `Shaders.metal` - Vertex/fragment shaders with time-based animation
 - `ViewController` - UI management and render loop coordination
 
+<p align="center">
+  <img src="Assets/animating-triang-gif.gif" width="250"/>
+</p>
+
+
+
 ## MS2: Rotating Cube 
 
 In this milestone,  I expanded last milestone with depth testing in 3D.
