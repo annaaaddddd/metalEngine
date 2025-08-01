@@ -64,14 +64,21 @@ void Renderer::drawFrame(const CA::MetalDrawable *const pDrawable)
     pRpd->colorAttachments()->object(0)->setLoadAction(MTL::LoadActionClear);
     pRpd->colorAttachments()->object(0)->setClearColor(MTL::ClearColor::Make(0.0, 1.0, 0.0, 1.0));
     
-    // Adding vertices of a triangle
-    const std::vector<float> triangle = {
+    // Applying indexed drawing
+    const std::vector<float> vertices = {
         -0.5f, 0.5f, .0f,
         0.5f, 0.5f, .0f,
         .0f, -1.0f, .0f
     };
     
-    const std::unique_ptr<MTL::Buffer, void(*) (MTL::Buffer * const)> pVertexBuffer(_pDevice->newBuffer(triangle.data(),sizeof(float) * 9, MTL::ResourceStorageModeShared), [](MTL::Buffer * const b) { b->release(); }); // costum deleter for the allocated mem for this triangle
+    // Indexed triangles
+    const std::vector<ushort> indices = {
+        0, 1, 2
+    };
+    
+    const std::unique_ptr<MTL::Buffer, void(*) (MTL::Buffer * const)> pVertexBuffer(_pDevice->newBuffer(vertices.data(),sizeof(float) * vertices.size(), MTL::ResourceStorageModeShared), [](MTL::Buffer * const b) { b->release(); });
+    
+    const std::unique_ptr<MTL::Buffer, void(*) (MTL::Buffer * const)> pIndexBuffer(_pDevice->newBuffer(indices.data(),sizeof(ushort) * indices.size(), MTL::ResourceStorageModeShared), [](MTL::Buffer * const b) { b->release(); });
     
     _timer += 0.01;
     
@@ -79,7 +86,10 @@ void Renderer::drawFrame(const CA::MetalDrawable *const pDrawable)
     pEnc->setRenderPipelineState(_pRenderPipelineState.get());
     pEnc->setVertexBuffer(pVertexBuffer.get(), 0, 5);
     pEnc->setVertexBytes(&_timer, sizeof(float), 7); // Lightweight alternative to set VertexBuffer; Recommend when passing data less than 4KB
-    pEnc->drawPrimitives(MTL::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
+    
+//    pEnc->drawPrimitives(MTL::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
+    pEnc->drawIndexedPrimitives(MTL::PrimitiveTypeTriangle, indices.size(), MTL::IndexTypeUInt16, pIndexBuffer.get(), 0);
+    
     pEnc->endEncoding();
     pCmdBuf->presentDrawable(pDrawable);
     pCmdBuf->commit();
